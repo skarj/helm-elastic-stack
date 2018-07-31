@@ -1,0 +1,24 @@
+{{- if and .Values.master_data.enabled .Values.master_data.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metamaster_data:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.master_data.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.master_data.fullname" . }}
+spec:
+{{- if .Values.master_data.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.master_data.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.master_data.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.master_data.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.master_data.name }}"
+      release: {{ .Release.Name }}
+{{- end }}

@@ -1,0 +1,164 @@
+{{- if and .Values.master_data.enabled }}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.master_data.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.master_data.fullname" . }}
+spec:
+  serviceName: {{ template "elasticsearch.master_data.fullname" . }}
+  replicas: {{ .Values.master_data.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "elasticsearch.name" . }}
+        component: "{{ .Values.master_data.name }}"
+        release: {{ .Release.Name }}
+        {{- if .Values.master_data.podAnnotations }}
+      annotations:
+{{ toYaml .Values.master_data.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+{{- if .Values.master_data.priorityClassName }}
+      priorityClassName: "{{ .Values.master_data.priorityClassName }}"
+{{- end }}
+      securityContext:
+        fsGroup: 1000
+      {{- if eq .Values.master_data.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.master_data.name }}"
+      {{- else if eq .Values.master_data.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.master_data.name }}"
+      {{- end }}
+{{- if .Values.master_data.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.master_data.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.master_data.tolerations }}
+      tolerations:
+{{ toYaml .Values.master_data.tolerations | indent 8 }}
+{{- end }}
+      initContainers:
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      - name: "chown"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - /bin/bash
+        - -c
+        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
+          chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+      containers:
+      - name: elasticsearch
+        env:
+        - name: NODE_MASTER
+          value: "true"
+        - name: NODE_DATA
+          value: "true"
+        - name: DISCOVERY_SERVICE
+          value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.master_data.heapSize }} -Xmx{{ .Values.master_data.heapSize }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 9300
+          name: transport
+{{ if .Values.master_data.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
+        resources:
+{{ toYaml .Values.master_data.resources | indent 12 }}
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health?local=true
+            port: 9200
+          initialDelaySeconds: 5
+        volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: data
+          - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+            name: config
+            subPath: elasticsearch.yml
+          - name: config
+            mountPath: /pre-stop-hook.sh
+            subPath: pre-stop-hook.sh
+          - name: config
+            mountPath: /post-start-hook.sh
+            subPath: post-start-hook.sh
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","/pre-stop-hook.sh"]
+          postStart:
+            exec:
+              command: ["/bin/bash","/post-start-hook.sh"]
+      terminationGracePeriodSeconds: {{ .Values.master_data.terminationGracePeriodSeconds }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}
+  {{- if not .Values.master_data.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- else }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - {{ .Values.master_data.persistence.accessMode | quote }}
+    {{- if .Values.master_data.persistence.storageClass }}
+    {{- if (eq "-" .Values.master_data.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.master_data.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.master_data.persistence.size }}"
+  {{- end }}
+{{- end }}

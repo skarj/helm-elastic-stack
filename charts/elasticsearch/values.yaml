@@ -1,0 +1,155 @@
+# Default values for elasticsearch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+appVersion: "6.3.2"
+
+image:
+  #repository: "docker.elastic.co/elasticsearch/elasticsearch"
+  repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
+  tag: "6.3.2"
+  pullPolicy: "IfNotPresent"
+
+cluster:
+  name: "elasticsearch"
+  kubernetesDomain: cluster.local
+  xpackEnable: false
+  config:
+
+client:
+
+  enabled: false
+
+  name: client
+  replicas: 2
+  serviceType: ClusterIP
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+  heapSize: "512m"
+  antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each client Pod
+  # podAnnotations:
+  #   example: client-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    # maxUnavailable: 1
+
+master:
+
+  enabled: false
+
+  name: master
+  exposeHttp: false
+  replicas: 3
+  serviceType: ClusterIP
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+  heapSize: "512m"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    name: data
+    size: "4Gi"
+    # storageClass: "ssd"
+  antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each master Pod
+  # podAnnotations:
+  #   example: master-foo
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 2  # Same as `cluster.env.MINIMUM_MASTER_NODES`
+    # maxUnavailable: 1
+
+data:
+
+  enabled: false
+
+  name: data
+  exposeHttp: false
+  replicas: 2
+  heapSize: "1536m"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    name: data
+    size: "30Gi"
+    # storageClass: "ssd"
+  terminationGracePeriodSeconds: 3600
+  antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "2048Mi"
+    requests:
+      cpu: "25m"
+      memory: "1536Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each data Pod
+  # podAnnotations:
+  #   example: data-foo
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    maxUnavailable: 1
+
+master_data:
+
+  enabled: true
+
+  name: master-data
+  exposeHttp: true
+  replicas: 1
+  serviceType: ClusterIP
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+  heapSize: "1536m"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    name: master-data
+    size: "30Gi"
+    # storageClass: "ssd"
+  terminationGracePeriodSeconds: 3600
+  antiAffinity: "soft"
+  nodeSelector: {}
+  tolerations: {}
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "2048Mi"
+    requests:
+      cpu: "25m"
+      memory: "1536Mi"
+  priorityClassName: ""
+  ## (dict) If specified, apply these annotations to each master_data Pod
+  # podAnnotations:
+  #   example: master-data-foo
+  podDisruptionBudget:
+    enabled: false
+    # minAvailable: 1
+    maxUnavailable: 1

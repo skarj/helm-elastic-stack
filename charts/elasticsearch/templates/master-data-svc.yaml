@@ -1,0 +1,30 @@
+{{- if .Values.master_data.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.master_data.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.fullname" . }}-discovery
+{{- if .Values.master_data.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.master_data.serviceAnnotations | indent 4 }}
+{{- end }}
+
+spec:
+  ports:
+    - name: transport
+      port: 9300
+      targetPort: transport
+    - name: http
+      port: 9200
+      targetPort: http
+  selector:
+    app: {{ template "elasticsearch.name" . }}
+    component: "{{ .Values.master_data.name }}"
+    release: {{ .Release.Name }}
+  type: {{ .Values.master_data.serviceType }}
+{{- end }}

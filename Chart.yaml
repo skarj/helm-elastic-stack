@@ -1,0 +1,18 @@
+name: elasticsearch
+version: 1.0.0
+appVersion: 6.3.2
+description: Flexible and powerful open source, distributed real-time search and analytics engine.
+icon: https://www.elastic.co/assets/blte1ccb52ef00ca60e/icon-elastic-stack-bb.svg
+keywords:
+- elastic
+- elk
+maintainers:
+- name: skaarj
+  email: skaarj.sergey@gmail.com
+sources:
+- https://github.com/helm/charts/tree/master/incubator/elasticsearch
+- https://github.com/helm/charts/tree/master/incubator/elasticsearch-curator
+- https://github.com/helm/charts/tree/master/incubator/logstash
+- https://github.com/helm/charts/tree/master/stable/kibana
+engine: gotpl
+home: https://www.elastic.co/products
