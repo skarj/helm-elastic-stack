@@ -98,25 +98,25 @@ podLabels: {}
   # team: "developers"
   # service: "logstash"
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: monitor
-  initialDelaySeconds: 20
-  # periodSeconds: 30
-  # timeoutSeconds: 30
-  # failureThreshold: 6
-  # successThreshold: 1
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: monitor
+#   initialDelaySeconds: 20
+#   # periodSeconds: 30
+#   # timeoutSeconds: 30
+#   # failureThreshold: 6
+#   # successThreshold: 1
 
-readinessProbe:
-  httpGet:
-    path: /
-    port: monitor
-  initialDelaySeconds: 20
-  # periodSeconds: 30
-  # timeoutSeconds: 30
-  # failureThreshold: 6
-  # successThreshold: 1
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: monitor
+#   initialDelaySeconds: 20
+#   # periodSeconds: 30
+#   # timeoutSeconds: 30
+#   # failureThreshold: 6
+#   # successThreshold: 1
 
 persistence:
   enabled: true
@@ -160,8 +160,8 @@ config:
   queue.type: persisted
 
   ## Logstash X-pack configuration
-  xpack.monitoring.enabled: "true"
-  xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
+  #xpack.monitoring.enabled: "true"
+  #xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
 
 ## Patterns for filters.
 ## Each YAML heredoc will become a separate pattern file.
