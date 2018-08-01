@@ -5,3 +5,6 @@ dependencies:
   - name: logstash
     version: 0.7.0
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  - name: elasticsearch-curator
+    version: 0.3.0
+    repository: https://kubernetes-charts-incubator.storage.googleapis.com/

@@ -1,0 +1,85 @@
+kibana:
+  image:
+    #repository: "docker.elastic.co/kibana/kibana"
+    repository: "docker.elastic.co/kibana/kibana-oss"
+    tag: 6.3.2
+
+  env:
+    ELASTICSEARCH_URL: "http://test-elasticsearch-discovery:9200"
+    # XPACK_MONITORING_UI_ENABLED: true
+    # XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: true
+    # XPACK_MONITORING_ENABLED: true
+    # XPACK_MONITORING_KIBANA_COLLECTION_ENABLED: true
+    # XPACK_SECURITY_ENABLED: false
+    # XPACK_ML_ENABLED: false
+    # XPACK_WATCHER_ENABLED: false
+
+  service:
+    type: LoadBalancer
+
+
+logstash:
+  image:
+    #repository: docker.elastic.co/logstash/logstash
+    repository: docker.elastic.co/logstash/logstash-oss
+    tag: 6.3.2
+
+    elasticsearch:
+      host: test-elasticsearch-discovery
+      port: 9200
+
+    #config:
+      #xpack.monitoring.enabled: "true"
+      #xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
+
+
+filebeat:
+  config:
+    output:
+      logstash:
+        hosts:
+          - test-logstash:5044
+        index: filebeat
+
+  indexTemplate:
+    upload: true
+    elasticsearch:
+      host: test-elasticsearch-discovery:9200
+
+
+elasticsearch-curator:
+  cronjob:
+    # At 01:00 every day
+    schedule: "0 1 * * *"
+
+  config:
+    elasticsearch:
+      hosts:
+        - test-elasticsearch-discovery
+      port: 9200
+
+  configMaps:
+    # Delete indices older than 7 days
+    action_file_yml: |-
+      ---
+      actions:
+        1:
+          action: delete_indices
+          description: Delete filebeat indices older than 7 days
+          options:
+            ignore_empty_list: true
+            timeout_override:
+            continue_if_exception: false
+            disable_action: false
+          filters:
+            - filtertype: pattern
+              kind: prefix
+              value: filebeat
+              exclude:
+            - filtertype: age
+              source: creation_date
+              direction: older
+              timestring: '%Y.%m.%d'
+              unit: days
+              unit_count: 7
+              exclude:
