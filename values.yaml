@@ -24,13 +24,13 @@ logstash:
     repository: docker.elastic.co/logstash/logstash-oss
     tag: 6.3.2
 
-    elasticsearch:
-      host: test-elasticsearch-discovery
-      port: 9200
+  elasticsearch:
+    host: test-elasticsearch-discovery
+    port: 9200
 
-    #config:
-      #xpack.monitoring.enabled: "true"
-      #xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
+  #config:
+    #xpack.monitoring.enabled: "true"
+    #xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
 
 
 filebeat:
