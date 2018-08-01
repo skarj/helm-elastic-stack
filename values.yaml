@@ -32,6 +32,16 @@ logstash:
     #xpack.monitoring.enabled: "true"
     #xpack.monitoring.elasticsearch.url: http://test-elasticsearch-discovery:9200
 
+  outputs:
+    main: |-
+      output {
+        # stdout { codec => rubydebug }
+        elasticsearch {
+          hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+          manage_template => false
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        }
+      }
 
 filebeat:
   config:
