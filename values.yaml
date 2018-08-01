@@ -69,7 +69,7 @@ elasticsearch-curator:
       port: 9200
 
   configMaps:
-    # Delete indices older than 7 days
+    # Delete filebeat indices older than 7 days
     action_file_yml: |-
       ---
       actions:
