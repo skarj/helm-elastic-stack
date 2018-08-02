@@ -17,6 +17,6 @@ before_script:
   - helm init #--service-account tiller --upgrade
 
 script:
-  - ls -l
-  - helm install ./helm-elastic-stack --name elk
+  - kubectl -n kube-system get po
+  - helm install . --name elk
 
