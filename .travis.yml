@@ -10,3 +10,12 @@ before_script:
   - sudo minikube start --vm-driver=none --kubernetes-version=v1.10.0
   - minikube update-context
   - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
+  - curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+  - kubectl create serviceaccount --namespace kube-system tiller
+  - kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+  - kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+  - helm init --service-account tiller --upgrade
+
+install:
+  - helm install ./helm-elastic-stack --name elk
+
