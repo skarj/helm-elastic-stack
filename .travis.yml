@@ -34,6 +34,6 @@ jobs:
         - helm repo add incubator https://kubernetes-charts.storage.googleapis.com/
         - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         - helm dependency update .
-        - kubectl -n kube-system get po
+        - kubectl -n kube-system get pods
         - helm install . --name elk --values=values-test.yaml
-        - kubectl -n get po
+        - kubectl -n get pods
