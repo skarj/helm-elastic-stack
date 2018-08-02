@@ -16,6 +16,7 @@ before_script:
   - kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
   - helm init --service-account tiller --upgrade
 
-install:
+script:
+  - ls -l
   - helm install ./helm-elastic-stack --name elk
 
