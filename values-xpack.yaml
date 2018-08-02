@@ -34,7 +34,6 @@ logstash:
 
   elasticsearch:
     host: test-elasticsearch-discovery
-    port: 9200
 
   config:
     xpack.monitoring.enabled: "true"
@@ -64,7 +63,6 @@ filebeat:
       logstash:
         hosts:
           - test-logstash:5044
-        index: filebeat
 
   indexTemplate:
     upload: true
@@ -81,7 +79,6 @@ elasticsearch-curator:
     elasticsearch:
       hosts:
         - test-elasticsearch-discovery
-      port: 9200
 
   configMaps:
     # Delete filebeat indices older than 7 days

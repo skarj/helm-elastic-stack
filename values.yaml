@@ -3,7 +3,7 @@ kibana:
     tag: 6.3.2
 
   env:
-    ELASTICSEARCH_URL: "http://test-elasticsearch-discovery:9200"
+    ELASTICSEARCH_URL: "http://elk-elasticsearch-discovery:9200"
 
   service:
     type: LoadBalancer
@@ -14,8 +14,7 @@ logstash:
     tag: 6.3.2
 
   elasticsearch:
-    host: test-elasticsearch-discovery
-    port: 9200
+    host: elk-elasticsearch-discovery
 
   outputs:
     main: |-
@@ -40,13 +39,12 @@ filebeat:
     output:
       logstash:
         hosts:
-          - test-logstash:5044
-        index: filebeat
+          - elk-logstash:5044
 
   indexTemplate:
     upload: true
     elasticsearch:
-      host: test-elasticsearch-discovery:9200
+      host: elk-elasticsearch-discovery:9200
 
 
 elasticsearch-curator:
@@ -57,8 +55,7 @@ elasticsearch-curator:
   config:
     elasticsearch:
       hosts:
-        - test-elasticsearch-discovery
-      port: 9200
+        - elk-elasticsearch-discovery
 
   configMaps:
     # Delete filebeat indices older than 7 days

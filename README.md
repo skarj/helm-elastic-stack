@@ -7,7 +7,14 @@
         helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         helm dependency update .
 
-  * Change connection urls in values.yaml
+  * Change connection urls in values.yaml. Waiting for https://github.com/helm/helm/pull/3252
+
+        kibana.env.ELASTICSEARCH_URL
+        logstash.elasticsearch.host
+        filebeat.config.output.logstash.hosts
+        filebeat.indexTemplate.elasticsearch.hosts
+        elasticsearch-curator.config.elasticsearch.hosts
+
   * Install
 
         helm install ./helm-elastic-stack --name elk
