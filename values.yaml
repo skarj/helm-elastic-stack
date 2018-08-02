@@ -43,6 +43,13 @@ logstash:
         }
       }
 
+  livenessProbe:
+    initialDelaySeconds: 120
+
+  readinessProbe:
+    initialDelaySeconds: 120
+
+
 filebeat:
   config:
     output:

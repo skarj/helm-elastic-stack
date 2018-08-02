@@ -9,4 +9,9 @@
 
   * Change connection urls in values.yaml
   * Install
+
         helm install ./helm-elastic-stack --name elk
+
+## Uninstall
+
+        helm delete --purge elk
