@@ -1,0 +1,81 @@
+kibana:
+  image:
+    tag: 6.3.2
+
+  env:
+    ELASTICSEARCH_URL: "http://elk-elasticsearch-discovery:9200"
+
+
+logstash:
+  image:
+    tag: 6.3.2
+
+  elasticsearch:
+    host: elk-elasticsearch-discovery
+
+  outputs:
+    main: |-
+      output {
+        # stdout { codec => rubydebug }
+        elasticsearch {
+          hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+          manage_template => false
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        }
+      }
+
+  livenessProbe:
+    initialDelaySeconds: 120
+
+  readinessProbe:
+    initialDelaySeconds: 120
+
+
+filebeat:
+  config:
+    output:
+      logstash:
+        hosts:
+          - elk-logstash:5044
+
+  indexTemplate:
+    upload: true
+    elasticsearch:
+      host: elk-elasticsearch-discovery:9200
+
+
+elasticsearch-curator:
+  cronjob:
+    # At 01:00 every day
+    schedule: "0 1 * * *"
+
+  config:
+    elasticsearch:
+      hosts:
+        - elk-elasticsearch-discovery
+
+  configMaps:
+    # Delete filebeat indices older than 7 days
+    action_file_yml: |-
+      ---
+      actions:
+        1:
+          action: delete_indices
+          description: Delete filebeat indices older than 7 days
+          options:
+            ignore_empty_list: true
+            timeout_override:
+            continue_if_exception: false
+            disable_action: false
+          filters:
+            - filtertype: pattern
+              kind: prefix
+              value: filebeat
+              exclude:
+            - filtertype: age
+              source: creation_date
+              direction: older
+              timestring: '%Y.%m.%d'
+              unit: days
+              unit_count: 7
+              exclude:
