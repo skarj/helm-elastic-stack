@@ -12,7 +12,7 @@
         kibana.env.ELASTICSEARCH_URL
         logstash.elasticsearch.host
         filebeat.config.output.logstash.hosts
-        filebeat.indexTemplate.elasticsearch.hosts
+        filebeat.indexTemplate.elasticsearch.host
         elasticsearch-curator.config.elasticsearch.hosts
 
   * Install
