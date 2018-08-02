@@ -22,8 +22,6 @@ install:
   - kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
   - helm init --service-account tiller
   - kubectl wait --for=condition=ready pod/$(kubectl get pods -n kube-system -l "app=helm,name=tiller" -o jsonpath="{.items[0].metadata.name}") -n kube-system --timeout=60s
-  - kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
-  - helm init --service-account tiller --upgrade
 
 stages:
   - name: build
