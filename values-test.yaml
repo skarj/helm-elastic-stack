@@ -80,5 +80,5 @@ elasticsearch-curator:
               unit_count: 7
               exclude:
 
-  serviceAccount:
+  rbac:
     create: true
