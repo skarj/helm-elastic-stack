@@ -1,4 +1,5 @@
-# Helm elastic stack
+# Helm Elastic stack
+[![Build Status](https://api.travis-ci.org/skarj/helm-elastic-stack.svg?branch=master)](https://travis-ci.org/skarj/helm-elastic-stack)
 
 ## Usage
   * Add required repositories
@@ -18,6 +19,10 @@
   * Install
 
         helm install ./helm-elastic-stack --name elk
+
+  * To install ELK stack with X-pack support and basic (free) license
+
+        helm install ./helm-elastic-stack --name elk --values=test/values-test.yaml
 
 ## Uninstall
 
