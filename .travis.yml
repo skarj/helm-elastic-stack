@@ -43,4 +43,9 @@ jobs:
         - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         - helm dependency update .
         - helm install . --name elk --values=test/values-test.yaml
-        - kubectl -n kube-system get pods
+        - kubectl wait --for=condition=ready pod/$(kubectl get pods -l "app=elasticsearch,release=elk" -o jsonpath="{.items[0].metadata.name}") --timeout=120s
+        - kubectl wait --for=condition=ready pod/$(kubectl get pods -l "app=kibana,release=elk" -o jsonpath="{.items[0].metadata.name}") --timeout=120s
+        - kubectl wait --for=condition=ready pod/$(kubectl get pods -l "app=elasticsearch-curator,release=elk" -o jsonpath="{.items[0].metadata.name}") --timeout=120s
+        - kubectl wait --for=condition=ready pod/$(kubectl get pods -l "app=logstash,release=elk" -o jsonpath="{.items[0].metadata.name}") --timeout=120s
+        - kubectl wait --for=condition=ready pod/$(kubectl get pods -l "app=filebeat,release=elk" -o jsonpath="{.items[0].metadata.name}") --timeout=120s
+        - kubectl get pods
