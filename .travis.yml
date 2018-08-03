@@ -5,7 +5,7 @@ env:
   - CHANGE_MINIKUBE_NONE_USER=true
 
 before_install:
-  # Make root mounted as rshared to fix kube-dns issues.
+  # make root mounted as rshared to fix kube-dns issues.
   - sudo mount --make-rshared /
   # install nsenter for helm and port forwarding
   - sudo apt-get -qq update
@@ -38,4 +38,4 @@ jobs:
         - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         - helm dependency update .
         - kubectl -n kube-system get pods
-        - helm install . --name elk --values=values-test.yaml
+        - helm install . --name elk --values=test/values-test.yaml

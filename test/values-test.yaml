@@ -46,7 +46,6 @@ filebeat:
 
 elasticsearch-curator:
   cronjob:
-    # At 01:00 every day
     schedule: "0 1 * * *"
 
   config:
@@ -55,7 +54,6 @@ elasticsearch-curator:
         - elk-elasticsearch-discovery
 
   configMaps:
-    # Delete filebeat indices older than 7 days
     action_file_yml: |-
       ---
       actions:
