@@ -27,15 +27,20 @@ install:
   - kubectl wait --for=condition=ready pod/$(kubectl get pods -n kube-system -l "app=helm,name=tiller" -o jsonpath="{.items[0].metadata.name}") -n kube-system --timeout=60s
 
 stages:
-  - name: build
+  - name: test
+  - name: install
 
 jobs:
   include:
-    - stage: build
-      name: build
+    - stage: test
+      name: test
+      script:
+        - docker run --rm -v "$(pwd):/workdir" --workdir /workdir gcr.io/kubernetes-charts-ci/chart-testing:v1.0.2 chart_test.sh --config test/.testenv
+    - stage: install
+      name: install
       script:
         - helm repo add incubator https://kubernetes-charts.storage.googleapis.com/
         - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         - helm dependency update .
-        - kubectl -n kube-system get pods
         - helm install . --name elk --values=test/values-test.yaml
+        - kubectl -n kube-system get pods
