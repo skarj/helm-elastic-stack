@@ -5,6 +5,8 @@ env:
   - CHANGE_MINIKUBE_NONE_USER=true
 
 before_install:
+  # Make root mounted as rshared to fix kube-dns issues.
+  - sudo mount --make-rshared /
   # install nsenter for helm and port forwarding
   - sudo apt-get -qq update
   - sudo apt-get install -y socat
@@ -14,12 +16,13 @@ before_install:
 install:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.1/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
   - curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.25.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
-  - sudo minikube start --vm-driver=none --kubernetes-version=v1.9.0 --extra-config=apiserver.authorization-mode=RBAC
+  - sudo minikube start --vm-driver=none --kubernetes-version=v1.9.0 --bootstrapper=localkube --feature-gates=CustomResourceSubresources=true --extra-config=apiserver.Authorization.Mode=RBAC
   - minikube update-context
   - JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl get nodes -o jsonpath="$JSONPATH" 2>&1 | grep -q "Ready=True"; do sleep 1; done
   - curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
   - kubectl -n kube-system create sa tiller
   - kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+  - kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
   - helm init --service-account tiller
   - kubectl wait --for=condition=ready pod/$(kubectl get pods -n kube-system -l "app=helm,name=tiller" -o jsonpath="{.items[0].metadata.name}") -n kube-system --timeout=60s
 
