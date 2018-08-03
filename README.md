@@ -20,9 +20,9 @@
 
         helm install ./helm-elastic-stack --name elk
 
-  * To install ELK stack with X-pack support and basic (free) license
+  * To install ELK stack with X-Oack support and basic (free) license
 
-        helm install ./helm-elastic-stack --name elk --values=test/values-test.yaml
+        helm install ./helm-elastic-stack --name elk --values=values-xpack.yaml
 
 ## Uninstall
 
