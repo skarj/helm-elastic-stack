@@ -31,7 +31,7 @@ spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
 {{- end }}
-{{- if .Values.indexTemplate.upload }}
+{{- if .Values.indexTemplateLoad }}
       initContainers:
       - name: "load-es-template"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -42,7 +42,7 @@ spec:
         - filebeat setup --template
           -E output.logstash.enabled=false
           -E output.file.enabled=false
-          -E output.elasticsearch.hosts=['{{ .Values.indexTemplate.elasticsearch.host }}']
+          -E output.elasticsearch.hosts=[{{- range $index, $host := .Values.indexTemplateLoad }}{{ if $index }}, {{ end }}{{ $host | quote }}{{- end }}]
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}

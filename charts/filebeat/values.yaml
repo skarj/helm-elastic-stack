@@ -49,10 +49,9 @@ config:
 
 # Upload index template to Elasticsearch if Logstash output is enabled
 # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html
-indexTemplate:
-  upload: false
-  elasticsearch:
-    host: elasticsearch:9200
+# List of Elasticsearch hosts
+indexTemplateLoad: []
+  # - elasticsearch:9200
 
 # List of beat plugins
 plugins: []

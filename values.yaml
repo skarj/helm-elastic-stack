@@ -41,11 +41,8 @@ filebeat:
         hosts:
           - elk-logstash:5044
 
-  indexTemplate:
-    upload: true
-    elasticsearch:
-      host: elk-elasticsearch-discovery:9200
-
+  indexTemplateLoad:
+    - elk-elasticsearch-discovery:9200
 
 elasticsearch-curator:
   cronjob:
