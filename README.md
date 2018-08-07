@@ -2,9 +2,8 @@
 [![Build Status](https://api.travis-ci.org/skarj/helm-elastic-stack.svg?branch=master)](https://travis-ci.org/skarj/helm-elastic-stack)
 
 ## Usage
-  * Add required repositories
+  * Add incubator repository
 
-        helm repo add incubator https://kubernetes-charts.storage.googleapis.com/
         helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
         helm dependency update .
 
