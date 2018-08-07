@@ -86,6 +86,10 @@ spec:
         env:
         - name: NODE_DATA
           value: "false"
+{{- if hasPrefix "5." .Values.appVersion }}
+        - name: NODE_INGEST
+          value: "false"
+{{- end }}
         - name: DISCOVERY_SERVICE
           value: {{ template "elasticsearch.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.{{ .Values.cluster.kubernetesDomain }}
         - name: PROCESSORS
@@ -120,6 +124,16 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if hasPrefix "2." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: config
+          subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
       volumes:
       - name: config
         configMap:
