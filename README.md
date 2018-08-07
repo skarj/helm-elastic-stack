@@ -15,11 +15,11 @@
         filebeat.indexTemplate.elasticsearch.host
         elasticsearch-curator.config.elasticsearch.hosts
 
-  * Install
+  * Install ELK stack
 
         helm install ./helm-elastic-stack --name elk
 
-  * To install ELK stack with X-Oack support and basic (free) license
+  * To install ELK stack with X-Pack support and basic (free) license
 
         helm install ./helm-elastic-stack --name elk --values=values-xpack.yaml
 
