@@ -32,6 +32,9 @@ logstash:
 
 
 filebeat:
+  image:
+    tag: 6.3.2
+
   config:
     output:
       logstash:

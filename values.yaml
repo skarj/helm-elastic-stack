@@ -35,6 +35,9 @@ logstash:
 
 
 filebeat:
+  image:
+    tag: 6.3.2
+
   config:
     output:
       logstash:
@@ -43,6 +46,7 @@ filebeat:
 
   indexTemplateLoad:
     - elk-elasticsearch-discovery:9200
+
 
 elasticsearch-curator:
   cronjob:
