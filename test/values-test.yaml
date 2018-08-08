@@ -75,6 +75,3 @@ elasticsearch-curator:
               unit: days
               unit_count: 7
               exclude:
-
-  rbac:
-    create: true
