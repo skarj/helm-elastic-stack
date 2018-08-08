@@ -36,10 +36,11 @@ filebeat:
     tag: 6.3.2
 
   config:
-    output:
-      logstash:
-        hosts:
-          - elk-logstash:5044
+    output.file:
+      enabled: false
+    output.logstash:
+      hosts:
+        - elk-logstash:5044
 
   indexTemplateLoad:
     - elk-elasticsearch-discovery:9200

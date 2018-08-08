@@ -58,16 +58,18 @@ logstash:
 
 
 filebeat:
-  config:
-    output:
-      logstash:
-        hosts:
-          - test-logstash:5044
+  image:
+    tag: 6.3.2
 
-  indexTemplate:
-    upload: true
-    elasticsearch:
-      host: test-elasticsearch-discovery:9200
+  config:
+    output.file:
+      enabled: false
+    output.logstash:
+      hosts:
+        - elk-logstash:5044
+
+  indexTemplateLoad:
+    - elk-elasticsearch-discovery:9200
 
 
 elasticsearch-curator:
