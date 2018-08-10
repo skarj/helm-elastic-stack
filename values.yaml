@@ -5,9 +5,6 @@ kibana:
   env:
     ELASTICSEARCH_URL: "http://elk-elasticsearch-discovery:9200"
 
-  service:
-    type: LoadBalancer
-
 
 logstash:
   image:

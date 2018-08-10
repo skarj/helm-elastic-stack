@@ -23,9 +23,6 @@ kibana:
     XPACK_ML_ENABLED: false
     XPACK_WATCHER_ENABLED: false
 
-  service:
-    type: LoadBalancer
-
 
 logstash:
   image:
