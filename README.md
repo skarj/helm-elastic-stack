@@ -5,7 +5,7 @@
   * Add incubator repository
 
         helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-        helm dependency update .
+        helm dependency update ./helm-elastic-stack
 
   * Change connection urls in values.yaml if you use different release name (not elk). Waiting for https://github.com/helm/helm/pull/3252
 
