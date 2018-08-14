@@ -1,17 +1,26 @@
+elasticsearch:
+  fullnameOverride: elasticsearch
+
+  image:
+    tag: 6.3.2
+
+
 kibana:
   image:
     tag: 6.3.2
 
   env:
-    ELASTICSEARCH_URL: "http://elk-elasticsearch-discovery:9200"
+    ELASTICSEARCH_URL: "http://elasticsearch-discovery:9200"
 
 
 logstash:
+  fullnameOverride: logstash
+
   image:
     tag: 6.3.2
 
   elasticsearch:
-    host: elk-elasticsearch-discovery
+    host: elasticsearch-discovery
 
   outputs:
     main: |-
@@ -32,6 +41,8 @@ logstash:
 
 
 filebeat:
+  enabled: true
+
   image:
     tag: 6.3.2
 
@@ -40,13 +51,15 @@ filebeat:
       enabled: false
     output.logstash:
       hosts:
-        - elk-logstash:5044
+        - logstash:5044
 
   indexTemplateLoad:
-    - elk-elasticsearch-discovery:9200
+    - elasticsearch-discovery:9200
 
 
 elasticsearch-curator:
+  enabled: true
+
   cronjob:
     # At 01:00 every day
     schedule: "0 1 * * *"
@@ -54,7 +67,7 @@ elasticsearch-curator:
   config:
     elasticsearch:
       hosts:
-        - elk-elasticsearch-discovery
+        - elasticsearch-discovery
 
   configMaps:
     # Delete filebeat indices older than 7 days
