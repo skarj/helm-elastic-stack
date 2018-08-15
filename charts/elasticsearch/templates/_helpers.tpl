@@ -91,11 +91,26 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/discovery-settin
 */}}
 {{- define "elasticsearch.master_node.mincount" -}}
 {{- if and .Values.master.enabled .Values.master_data.enabled -}}
-{{ add (div (add .Values.master.replicas .Values.master_data.replicas) 2) 1 }}
+{{- $masters := add .Values.master.replicas .Values.master_data.replicas -}}
+{{- if gt $masters 2 -}}
+{{ add (div $masters 2) 1 }}
+{{- else -}}
+1
+{{- end -}}
 {{- else if and .Values.master.enabled (not .Values.master_data.enabled) -}}
-{{ add (div .Values.master.replicas 2) 1 }}
+{{- $masters := add .Values.master.replicas -}}
+{{- if gt $masters 2 -}}
+{{ add (div $masters 2) 1 }}
+{{- else -}}
+1
+{{- end -}}
 {{- else if and .Values.master_data.enabled (not .Values.master.enabled) -}}
-{{ add (div .Values.master_data.replicas 2) 1 }}
+{{- $masters := add .Values.master_data.replicas -}}
+{{- if gt $masters 2 -}}
+{{ add (div $masters 2) 1 }}
+{{- else -}}
+1
+{{- end -}}
 {{- else -}}
 1
 {{- end -}}

@@ -19,7 +19,6 @@ cluster:
   env:
 
 client:
-
   enabled: false
 
   name: client
@@ -49,7 +48,6 @@ client:
     # maxUnavailable: 1
 
 master:
-
   enabled: false
 
   name: master
@@ -86,7 +84,6 @@ master:
     # maxUnavailable: 1
 
 data:
-
   enabled: false
 
   name: data
@@ -120,7 +117,6 @@ data:
     maxUnavailable: 1
 
 master_data:
-
   enabled: true
 
   name: master-data
