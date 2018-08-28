@@ -76,6 +76,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.tolerations`                 | Client tolerations                                                  | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                 |
+| `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                 |
 | `master.enabled`                     | Create master nodes                                                 | `false`                              |
 | `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                              |
 | `master.name`                        | Master component name                                               | `master`                             |
@@ -139,7 +141,15 @@ The YAML value of cluster.config is appended to elasticsearch.yml file for addit
 
 ## Application Version
 
-This chart aims to support Elasticsearch v6.x deployments only.
+This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+
+### Version Specific Features
+
+* Memory Locking *(variable renamed)*
+* Ingest Node *(v5)*
+* X-Pack Plugin *(v5)*
+
+Upgrade paths & more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
 ## Mlocking
 
