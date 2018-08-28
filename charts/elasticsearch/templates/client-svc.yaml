@@ -33,3 +33,4 @@ spec:
     - {{ $rangeList }}
     {{end}}
   {{end}}
+{{- end }}
