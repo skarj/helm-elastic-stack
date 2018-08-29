@@ -80,7 +80,7 @@ spec:
           runAsUser: 0
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
-          name: data
+          name: { .Values.master_data.persistence.name }}
       containers:
       - name: elasticsearch
         env:
