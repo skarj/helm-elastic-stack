@@ -1,15 +1,15 @@
 dependencies:
   - name: kibana
-    version: 0.14.2
+    version: 0.14.7
     repository: https://kubernetes-charts.storage.googleapis.com/
   - name: logstash
-    version: 0.9.1
+    version: 0.9.5
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   - name: elasticsearch-curator
     version: 0.4.1
     repository: https://kubernetes-charts-incubator.storage.googleapis.com/
     condition: elasticsearch-curator.enabled
   - name: filebeat
-    version: 1.0.2
+    version: 1.0.3
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: filebeat.enabled
