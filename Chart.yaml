@@ -1,6 +1,6 @@
 name: elasticsearch
 version: 1.0.0
-appVersion: 6.3.2
+appVersion: 6.4.2
 description: Elastic Stack is a group of open source products from Elastic designed to help users take data from any type of source and in any format and search, analyze, and visualize that data in real time
 icon: https://www.elastic.co/assets/blte1ccb52ef00ca60e/icon-elastic-stack-bb.svg
 keywords:
