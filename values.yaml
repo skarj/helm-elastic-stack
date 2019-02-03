@@ -2,12 +2,12 @@ elasticsearch:
   fullnameOverride: elasticsearch
 
   image:
-    tag: 6.4.2
+    tag: 6.6.0
 
 
 kibana:
   image:
-    tag: 6.4.2
+    tag: 6.6.0
 
   env:
     ELASTICSEARCH_URL: "http://elasticsearch-discovery:9200"
@@ -17,7 +17,7 @@ logstash:
   fullnameOverride: logstash
 
   image:
-    tag: 6.4.2
+    tag: 6.6.0
 
   elasticsearch:
     host: elasticsearch-discovery
@@ -44,7 +44,7 @@ filebeat:
   enabled: true
 
   image:
-    tag: 6.4.2
+    tag: 6.6.0
 
   config:
     output.file:
